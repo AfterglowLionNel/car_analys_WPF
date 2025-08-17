@@ -34,7 +34,7 @@ namespace CarAnalysisDashboard.ViewModels
         private decimal _minPrice;
 
         [ObservableProperty]
-        private decimal _maxPrice;
+        private int _maxPrice;
 
         [ObservableProperty]
         private int _totalCount;
@@ -199,7 +199,7 @@ namespace CarAnalysisDashboard.ViewModels
             {
                 AveragePrice = (decimal)System.Math.Round(prices.Average(x => (double)x) / 10000.0, 1);
                 MinPrice = (decimal)System.Math.Round((double)prices.Min() / 10000.0, 1);
-                MaxPrice = (decimal)System.Math.Round((double)prices.Max() / 10000.0, 1);
+                MaxPrice = (int)(prices.Max() / 10000);
                 
                 var sortedPrices = prices.OrderBy(p => p).ToList();
                 var middle = sortedPrices.Count / 2;
@@ -438,7 +438,7 @@ namespace CarAnalysisDashboard.ViewModels
                     Average = g.Where(x => x.Data.Price > 0).Average(x => (double)x.Data.Price) / 10000.0,
                     Median = GetMedian(g.Where(x => x.Data.Price > 0).Select(x => x.Data.Price).ToList()) / 10000.0,
                     Min = g.Where(x => x.Data.Price > 0).Min(x => x.Data.Price) / 10000.0,
-                    Max = g.Where(x => x.Data.Price > 0).Max(x => x.Data.Price) / 10000.0,
+                    Max = (int)(g.Where(x => x.Data.Price > 0).Max(x => x.Data.Price) / 10000),
                     PriceList = g.Where(x => x.Data.Price > 0).Select(x => x.Data.Price).ToList() // デバッグ用
                 })
                 .ToList();
