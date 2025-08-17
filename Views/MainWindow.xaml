@@ -1,0 +1,328 @@
+﻿<Window x:Class="CarAnalysisDashboard.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
+        xmlns:vm="clr-namespace:CarAnalysisDashboard.ViewModels"
+        mc:Ignorable="d"
+        Title="中古車分析ダッシュボード" Height="900" Width="1400"
+        Background="{StaticResource BackgroundBrush}"
+        WindowStartupLocation="CenterScreen">
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" Background="{StaticResource PrimaryBrush}" Height="60">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="20,0">
+                    <TextBlock Text="🚗" FontSize="24" Foreground="White" Margin="0,0,10,0"/>
+                    <TextBlock Text="中古車分析ダッシュボード" FontSize="20" FontWeight="Medium" Foreground="White" VerticalAlignment="Center"/>
+                </StackPanel>
+                
+                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="20,0">
+                    <Button Content="CSVエクスポート" Style="{StaticResource SecondaryButton}" 
+                            Foreground="White" BorderBrush="White" Margin="0,0,10,0"
+                            Command="{Binding ExportDataCommand}"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Main Content -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="280"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Left Sidebar - Filters -->
+            <Border Grid.Column="0" Background="{StaticResource SurfaceBrush}" 
+                    BorderBrush="{StaticResource DividerBrush}" BorderThickness="0,0,1,0">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="16">
+                        <TextBlock Text="データ選択" Style="{StaticResource HeadingText}"/>
+                        
+                        <!-- Data Path -->
+                        <TextBlock Text="データパス:" Style="{StaticResource BodyText}" Margin="0,8,0,4"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox Grid.Column="0" Text="{Binding DataPath}" 
+                                    Style="{StaticResource MaterialTextBox}" IsReadOnly="True"/>
+                            <Button Grid.Column="1" Content="..." Width="30" Margin="4,0,0,0"
+                                   Command="{Binding BrowseDataPathCommand}"/>
+                        </Grid>
+                        
+                        <!-- Car Model Selection -->
+                        <TextBlock Text="車種:" Style="{StaticResource BodyText}" Margin="0,12,0,4"/>
+                        <ComboBox ItemsSource="{Binding CarModels}" 
+                                 SelectedItem="{Binding SelectedCarModel}"
+                                 Style="{StaticResource MaterialComboBox}"/>
+                        
+                        <TextBlock Text="ステータス:" Style="{StaticResource BodyText}" Margin="0,12,0,4"/>
+                        <TextBlock Text="{Binding StatusMessage}" 
+                                  Style="{StaticResource BodyText}" 
+                                  TextWrapping="Wrap"
+                                  Foreground="Gray"/>
+                        
+                        <Separator Margin="0,16"/>
+                        
+                        <!-- Filters -->
+                        <TextBlock Text="フィルター" Style="{StaticResource HeadingText}"/>
+                        
+                        <!-- Grade Filter -->
+                        <TextBlock Text="グレード:" Style="{StaticResource BodyText}" Margin="0,8,0,4"/>
+                        <ScrollViewer MaxHeight="120" VerticalScrollBarVisibility="Auto">
+                            <ItemsControl ItemsSource="{Binding FilterViewModel.Grades}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <CheckBox Content="{Binding Grade}" 
+                                                IsChecked="{Binding IsSelected}" 
+                                                Margin="0,2"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                        
+                        <StackPanel Orientation="Horizontal" Margin="0,8">
+                            <Button Content="全選択" Command="{Binding FilterViewModel.SelectAllGradesCommand}" 
+                                   Style="{StaticResource SecondaryButton}" Width="70" Margin="0,0,8,0"/>
+                            <Button Content="全解除" Command="{Binding FilterViewModel.ClearAllGradesCommand}" 
+                                   Style="{StaticResource SecondaryButton}" Width="70"/>
+                        </StackPanel>
+                        
+                        <!-- Year Filter -->
+                        <TextBlock Text="年式:" Style="{StaticResource BodyText}" Margin="0,12,0,4"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <ComboBox Grid.Column="0" 
+                                     ItemsSource="{Binding FilterViewModel.YearMinOptions}" 
+                                     SelectedItem="{Binding FilterViewModel.SelectedMinYear}"
+                                     Style="{StaticResource MaterialComboBox}"/>
+                            <TextBlock Grid.Column="1" Text=" - " VerticalAlignment="Center" Margin="8,0"/>
+                            <ComboBox Grid.Column="2" 
+                                     ItemsSource="{Binding FilterViewModel.YearMaxOptions}" 
+                                     SelectedItem="{Binding FilterViewModel.SelectedMaxYear}"
+                                     Style="{StaticResource MaterialComboBox}"/>
+                        </Grid>
+                        
+                        <!-- Price Filter -->
+                        <TextBlock Text="価格:" Style="{StaticResource BodyText}" Margin="0,12,0,4"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox Grid.Column="0" Text="{Binding FilterViewModel.MinPrice, Converter={StaticResource NumberFormatConverter}}" 
+                                    Style="{StaticResource MaterialTextBox}"/>
+                            <TextBlock Grid.Column="1" Text="万円" Style="{StaticResource BodyText}" VerticalAlignment="Center" Margin="4,0,8,0" Foreground="Gray"/>
+                            <TextBlock Grid.Column="2" Text=" - " VerticalAlignment="Center" Margin="4,0"/>
+                            <TextBox Grid.Column="3" Text="{Binding FilterViewModel.MaxPrice, Converter={StaticResource NumberFormatConverter}}" 
+                                    Style="{StaticResource MaterialTextBox}"/>
+                            <TextBlock Grid.Column="4" Text="万円" Style="{StaticResource BodyText}" VerticalAlignment="Center" Margin="4,0,0,0" Foreground="Gray"/>
+                        </Grid>
+                        
+                        <!-- Mileage Filter -->
+                        <TextBlock Text="走行距離:" Style="{StaticResource BodyText}" Margin="0,12,0,4"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <ComboBox Grid.Column="0" 
+                                     ItemsSource="{Binding FilterViewModel.MileageMinOptions}" 
+                                     SelectedItem="{Binding FilterViewModel.SelectedMinMileage}"
+                                     Style="{StaticResource MaterialComboBox}"/>
+                            <TextBlock Grid.Column="1" Text=" - " VerticalAlignment="Center" Margin="8,0"/>
+                            <ComboBox Grid.Column="2" 
+                                     ItemsSource="{Binding FilterViewModel.MileageMaxOptions}" 
+                                     SelectedItem="{Binding FilterViewModel.SelectedMaxMileage}"
+                                     Style="{StaticResource MaterialComboBox}"/>
+                        </Grid>
+                        
+                        <!-- Transmission Filter -->
+                        <TextBlock Text="ミッション:" Style="{StaticResource BodyText}" Margin="0,12,0,4"/>
+                        <ComboBox ItemsSource="{Binding FilterViewModel.TransmissionTypes}" 
+                                 SelectedItem="{Binding FilterViewModel.SelectedTransmission}"
+                                 Style="{StaticResource MaterialComboBox}"/>
+                        
+                        <!-- Repair History Filter -->
+                        <TextBlock Text="修復歴:" Style="{StaticResource BodyText}" Margin="0,12,0,4"/>
+                        <ComboBox ItemsSource="{Binding FilterViewModel.RepairHistoryOptions}" 
+                                 SelectedItem="{Binding FilterViewModel.SelectedRepairHistory}"
+                                 Style="{StaticResource MaterialComboBox}"/>
+                        
+                        <Button Content="フィルターリセット" 
+                               Command="{Binding FilterViewModel.ResetFiltersCommand}" 
+                               Style="{StaticResource SecondaryButton}" Margin="0,16,0,0"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+
+            <!-- Right Content Area -->
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- View Mode Selector -->
+                <Border Grid.Row="0" Margin="16,16,16,0" Style="{StaticResource MaterialCard}">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <RadioButton Content="概要" IsChecked="{Binding DashboardViewModel.ViewMode, Converter={StaticResource ViewModeConverter}, ConverterParameter=概要}" 
+                                        Margin="0,0,12,0" FontSize="14"/>
+                            <RadioButton Content="価格分布" IsChecked="{Binding DashboardViewModel.ViewMode, Converter={StaticResource ViewModeConverter}, ConverterParameter=価格分布}" 
+                                        Margin="0,0,12,0" FontSize="14"/>
+                            <RadioButton Content="価格推移" IsChecked="{Binding DashboardViewModel.ViewMode, Converter={StaticResource ViewModeConverter}, ConverterParameter=価格推移}" 
+                                        Margin="0,0,12,0" FontSize="14"/>
+                            <RadioButton Content="グレード分析" IsChecked="{Binding DashboardViewModel.ViewMode, Converter={StaticResource ViewModeConverter}, ConverterParameter=グレード分析}" 
+                                        Margin="0,0,12,0" FontSize="14"/>
+                            <RadioButton Content="走行距離vs価格" IsChecked="{Binding DashboardViewModel.ViewMode, Converter={StaticResource ViewModeConverter}, ConverterParameter=走行距離vs価格}" 
+                                        FontSize="14"/>
+                        </StackPanel>
+                        
+                        <!-- Price Trend Controls -->
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,8,0,0">
+                            <StackPanel.Style>
+                                <Style TargetType="StackPanel">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding DashboardViewModel.ViewMode}" Value="価格推移">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </Style>
+                            </StackPanel.Style>
+                            <TextBlock Text="表示する線:" Style="{StaticResource BodyText}" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                            <CheckBox Content="平均価格" IsChecked="{Binding DashboardViewModel.ShowAveragePrice}" 
+                                     Margin="0,0,12,0" Foreground="Blue" FontWeight="Medium"/>
+                            <CheckBox Content="中央価格" IsChecked="{Binding DashboardViewModel.ShowMedianPrice}" 
+                                     Margin="0,0,12,0" Foreground="Green" FontWeight="Medium"/>
+                            <CheckBox Content="最低価格" IsChecked="{Binding DashboardViewModel.ShowMinPrice}" 
+                                     Margin="0,0,12,0" Foreground="Red" FontWeight="Medium"/>
+                            <CheckBox Content="最高価格" IsChecked="{Binding DashboardViewModel.ShowMaxPrice}" 
+                                     Foreground="Purple" FontWeight="Medium"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- Dashboard Content -->
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                    <Grid Margin="16">
+                        <!-- Statistics Cards -->
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <!-- Stats Row -->
+                            <UniformGrid Grid.Row="0" Rows="1" Columns="4">
+                                <Border Style="{StaticResource MaterialCard}">
+                                    <StackPanel>
+                                        <TextBlock Text="平均価格" Style="{StaticResource SubheadingText}"/>
+                                        <TextBlock FontSize="24" FontWeight="Bold">
+                                            <TextBlock.Text>
+                                                <MultiBinding StringFormat="{}{0:N1}万円">
+                                                    <Binding Path="DashboardViewModel.AveragePrice"/>
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </Border>
+                                
+                                <Border Style="{StaticResource MaterialCard}">
+                                    <StackPanel>
+                                        <TextBlock Text="総数" Style="{StaticResource SubheadingText}"/>
+                                        <TextBlock Text="{Binding DashboardViewModel.TotalCount, Converter={StaticResource NumberFormatConverter}}" 
+                                                 FontSize="24" FontWeight="Bold"/>
+                                    </StackPanel>
+                                </Border>
+                                
+                                <Border Style="{StaticResource MaterialCard}">
+                                    <StackPanel>
+                                        <TextBlock Text="グレード数" Style="{StaticResource SubheadingText}"/>
+                                        <TextBlock Text="{Binding DashboardViewModel.UniqueGradeCount, Converter={StaticResource NumberFormatConverter}}" 
+                                                 FontSize="24" FontWeight="Bold"/>
+                                    </StackPanel>
+                                </Border>
+                                
+                                <Border Style="{StaticResource MaterialCard}">
+                                    <StackPanel>
+                                        <TextBlock Text="修復歴あり" Style="{StaticResource SubheadingText}"/>
+                                        <TextBlock FontSize="24" FontWeight="Bold">
+                                            <TextBlock.Text>
+                                                <MultiBinding StringFormat="{}{0:N1}%">
+                                                    <Binding Path="DashboardViewModel.RepairHistoryPercentage"/>
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </Border>
+                            </UniformGrid>
+
+                            <!-- Chart Area -->
+                            <Border Grid.Row="2" Style="{StaticResource MaterialCard}" MinHeight="400">
+                                <Grid>
+                                    <lvc:CartesianChart Series="{Binding DashboardViewModel.CurrentSeries}"
+                                                       XAxes="{Binding DashboardViewModel.XAxes}"
+                                                       YAxes="{Binding DashboardViewModel.YAxes}"
+                                                       TooltipTextPaint="{Binding DashboardViewModel.TooltipTextPaint}"/>
+                                    
+                                    <!-- No Data Message -->
+                                    <TextBlock Text="データがありません。データパスを確認し、車種を選択してください。" 
+                                              Style="{StaticResource BodyText}"
+                                              HorizontalAlignment="Center" 
+                                              VerticalAlignment="Center"
+                                              TextWrapping="Wrap"
+                                              Foreground="Gray"
+                                              Visibility="{Binding DashboardViewModel.TotalCount, Converter={StaticResource IntToVisibilityConverter}}"/>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </Grid>
+                </ScrollViewer>
+            </Grid>
+        </Grid>
+
+        <!-- Status Bar -->
+        <Border Grid.Row="2" Background="{StaticResource PrimaryDarkBrush}" Height="30">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <TextBlock Grid.Column="0" Text="{Binding StatusMessage}" 
+                          Foreground="White" VerticalAlignment="Center" Margin="10,0"/>
+                
+                <ProgressBar Grid.Column="1" Width="100" Height="4" Margin="10,0" 
+                            IsIndeterminate="{Binding IsLoading}" 
+                            Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

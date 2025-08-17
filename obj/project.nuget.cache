@@ -1,0 +1,28 @@
+{
+  "version": 2,
+  "dgSpecHash": "cJ9bFJJgc5Y=",
+  "success": true,
+  "projectFilePath": "F:\\analys_car\\analys_car.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\lions\\.nuget\\packages\\communitytoolkit.mvvm\\8.2.2\\communitytoolkit.mvvm.8.2.2.nupkg.sha512",
+    "C:\\Users\\lions\\.nuget\\packages\\csvhelper\\33.0.1\\csvhelper.33.0.1.nupkg.sha512",
+    "C:\\Users\\lions\\.nuget\\packages\\harfbuzzsharp\\2.8.2.4-preview.96\\harfbuzzsharp.2.8.2.4-preview.96.nupkg.sha512",
+    "C:\\Users\\lions\\.nuget\\packages\\harfbuzzsharp.nativeassets.macos\\2.8.2.4-preview.96\\harfbuzzsharp.nativeassets.macos.2.8.2.4-preview.96.nupkg.sha512",
+    "C:\\Users\\lions\\.nuget\\packages\\harfbuzzsharp.nativeassets.win32\\2.8.2.4-preview.96\\harfbuzzsharp.nativeassets.win32.2.8.2.4-preview.96.nupkg.sha512",
+    "C:\\Users\\lions\\.nuget\\packages\\livechartscore\\2.0.0-beta.920\\livechartscore.2.0.0-beta.920.nupkg.sha512",
+    "C:\\Users\\lions\\.nuget\\packages\\livechartscore.skiasharpview\\2.0.0-beta.920\\livechartscore.skiasharpview.2.0.0-beta.920.nupkg.sha512",
+    "C:\\Users\\lions\\.nuget\\packages\\livechartscore.skiasharpview.wpf\\2.0.0-beta.920\\livechartscore.skiasharpview.wpf.2.0.0-beta.920.nupkg.sha512",
+    "C:\\Users\\lions\\.nuget\\packages\\microsoft.extensions.dependencyinjection\\8.0.0\\microsoft.extensions.dependencyinjection.8.0.0.nupkg.sha512",
+    "C:\\Users\\lions\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\8.0.0\\microsoft.extensions.dependencyinjection.abstractions.8.0.0.nupkg.sha512",
+    "C:\\Users\\lions\\.nuget\\packages\\microsoft.netcore.platforms\\3.1.9\\microsoft.netcore.platforms.3.1.9.nupkg.sha512",
+    "C:\\Users\\lions\\.nuget\\packages\\microsoft.win32.systemevents\\4.7.0\\microsoft.win32.systemevents.4.7.0.nupkg.sha512",
+    "C:\\Users\\lions\\.nuget\\packages\\skiasharp\\2.88.4-preview.96\\skiasharp.2.88.4-preview.96.nupkg.sha512",
+    "C:\\Users\\lions\\.nuget\\packages\\skiasharp.harfbuzz\\2.88.4-preview.96\\skiasharp.harfbuzz.2.88.4-preview.96.nupkg.sha512",
+    "C:\\Users\\lions\\.nuget\\packages\\skiasharp.nativeassets.macos\\2.88.4-preview.96\\skiasharp.nativeassets.macos.2.88.4-preview.96.nupkg.sha512",
+    "C:\\Users\\lions\\.nuget\\packages\\skiasharp.nativeassets.win32\\2.88.4-preview.96\\skiasharp.nativeassets.win32.2.88.4-preview.96.nupkg.sha512",
+    "C:\\Users\\lions\\.nuget\\packages\\skiasharp.views.desktop.common\\2.88.4-preview.96\\skiasharp.views.desktop.common.2.88.4-preview.96.nupkg.sha512",
+    "C:\\Users\\lions\\.nuget\\packages\\skiasharp.views.wpf\\2.88.4-preview.96\\skiasharp.views.wpf.2.88.4-preview.96.nupkg.sha512",
+    "C:\\Users\\lions\\.nuget\\packages\\system.drawing.common\\4.7.3\\system.drawing.common.4.7.3.nupkg.sha512"
+  ],
+  "logs": []
+}

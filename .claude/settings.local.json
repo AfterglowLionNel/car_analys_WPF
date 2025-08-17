@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir:*)",
+      "Bash(mv:*)",
+      "Bash(dotnet restore:*)",
+      "Bash(dotnet build:*)",
+      "Bash(dotnet list:*)",
+      "Bash(dotnet run:*)",
+      "Bash(dotnet clean:*)",
+      "Bash(copy datasample_data.csv \"data\\RCF\\2025_01_15_F.No1.csv\")",
+      "Bash(cp:*)",
+      "Bash(dir:*)",
+      "Bash(rmdir:*)",
+      "Bash(rm:*)",
+      "Bash(timeout:*)",
+      "Bash(copy:*)"
+    ],
+    "deny": []
+  }
+}
